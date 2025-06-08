@@ -11,10 +11,7 @@ import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
 final _argParser = ArgParser(allowTrailingOptions: true);
-final formatter = DartFormatter(
-  pageWidth: 80,
-  fixes: StyleFix.all,
-);
+final formatter = DartFormatter(languageVersion: DartFormatter.latestLanguageVersion);
 
 void main(List<String> args) {
   defineOptions(_argParser);
@@ -54,16 +51,14 @@ void _run(CliArguments parsedArgs) {
   if (hasClassFile && !parsedArgs.classFile!.existsSync()) {
     parsedArgs.classFile!.createSync(recursive: true);
   } else if (hasClassFile) {
-    logger.v(
-        'Output file for a Flutter class already exists (${parsedArgs.classFile!.path}) - '
+    logger.v('Output file for a Flutter class already exists (${parsedArgs.classFile!.path}) - '
         'overwriting it');
   }
 
   if (!parsedArgs.fontFile.existsSync()) {
     parsedArgs.fontFile.createSync(recursive: true);
   } else {
-    logger.v(
-        'Output file for a font file already exists (${parsedArgs.fontFile.path}) - '
+    logger.v('Output file for a font file already exists (${parsedArgs.fontFile.path}) - '
         'overwriting it');
   }
 
@@ -73,13 +68,11 @@ void _run(CliArguments parsedArgs) {
       .toList();
 
   if (svgFileList.isEmpty) {
-    logger.w(
-        "The input directory doesn't contain any SVG file (${parsedArgs.svgDir.path}).");
+    logger.w("The input directory doesn't contain any SVG file (${parsedArgs.svgDir.path}).");
   }
 
   final svgMap = {
-    for (final f in svgFileList)
-      p.basenameWithoutExtension(f.path): File(f.path).readAsStringSync(),
+    for (final f in svgFileList) p.basenameWithoutExtension(f.path): File(f.path).readAsStringSync(),
   };
 
   final otfResult = svgToOtf(
@@ -142,8 +135,7 @@ ${_argParser.usage}
   exit(64);
 }
 
-const _kAbout =
-    'Converts .svg icons to an OpenType font and generates Flutter-compatible class.';
+const _kAbout = 'Converts .svg icons to an OpenType font and generates Flutter-compatible class.';
 
 const _kUsage = '''
 Usage:   icon_font_generator <input-svg-dir> <output-font-file> [options]
